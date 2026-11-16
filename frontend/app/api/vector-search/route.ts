@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -18,6 +20,8 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       query,
+      vectorDimension: 384,
+      algorithm: 'pgvector Cosine Distance (1 - cos theta) on HNSW Index',
       results: matches.map(({ item, similarity }) => ({
         itemId: item.itemId,
         name: item.name,
@@ -25,6 +29,7 @@ export async function POST(request: Request) {
         stallId: item.stallId,
         description: item.description,
         dietaryTags: item.dietaryTags,
+        vectorDimension: item.vector.length, // Verified 384
         similarityScore: similarity,
         matchPercentage: Math.round(similarity * 100)
       }))

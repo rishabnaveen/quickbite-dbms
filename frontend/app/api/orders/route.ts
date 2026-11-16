@@ -1,13 +1,22 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getOrders, placeOrder } from '@/lib/mysql-repository';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const studentId = searchParams.get('studentId') || undefined;
   const stallId = searchParams.get('stallId') || undefined;
 
-  const orders = db.getOrders(studentId, stallId);
-  return NextResponse.json({ orders });
+  try {
+    const orders = await getOrders(studentId, stallId);
+    return NextResponse.json({ orders });
+  } catch (err: any) {
+    return NextResponse.json(
+      { success: false, message: err.message || 'Unable to load orders' },
+      { status: 500 }
+    );
+  }
 }
 
 export async function POST(request: Request) {
@@ -22,7 +31,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = db.placeOrder({
+    const result = await placeOrder({
       studentId,
       stallId,
       items,

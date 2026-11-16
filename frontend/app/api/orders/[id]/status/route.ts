@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { updateOrderStatus } from '@/lib/mysql-repository';
+
+export const dynamic = 'force-dynamic';
 
 export async function PUT(
   request: Request,
@@ -17,7 +19,7 @@ export async function PUT(
       );
     }
 
-    const result = db.updateOrderStatus(orderId, status, actingRole, actingStallId);
+    const result = await updateOrderStatus(orderId, status, actingRole, actingStallId);
 
     if (!result.success) {
       return NextResponse.json(result, { status: 403 });

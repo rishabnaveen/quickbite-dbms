@@ -287,8 +287,8 @@ DELIMITER ;
 WITH RECURSIVE OrderWorkflowGraph AS (
     -- Anchor member: Initial stage of an order
     SELECT 
-        'Placed' AS current_state,
-        'Cooking' AS next_state,
+        CAST('Placed' AS CHAR(50)) AS current_state,
+        CAST('Cooking' AS CHAR(50)) AS next_state,
         1 AS step_level,
         CAST('Placed -> Cooking' AS CHAR(255)) AS workflow_path
     
