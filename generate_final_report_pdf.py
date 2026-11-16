@@ -317,7 +317,7 @@ COMMIT;""", code_style))
         ],
         [
             Paragraph("<b>2. Multi-Item Checkout Tray & Wallet Balance</b>", body_style),
-            Paragraph("• Tray tracks item quantities, individual subtotals, and projected debits.<br/>• Real-time balance check prevents overdrafts (e.g., ₹450 balance debits ₹240 for 2 Tikka Rolls).<br/>• Executes atomic ACID transaction in database, decrementing inventory stock in MENU_ITEM.", body_style)
+            Paragraph("• Tray tracks item quantities, individual subtotals, and projected debits.<br/>• Real-time balance check prevents overdrafts (e.g., Rs. 450 balance debits Rs. 240 for 2 Tikka Rolls).<br/>• Executes atomic ACID transaction in database, decrementing inventory stock in MENU_ITEM.", body_style)
         ],
         [
             Paragraph("<b>3. Live Order Progression Timeline (Student)</b>", body_style),
@@ -340,40 +340,6 @@ COMMIT;""", code_style))
         ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
     ]))
     story.append(t_screen)
-    story.append(Spacer(1, 8))
-
-    # -------------------------------------------------------------------------
-    # 8. EVALUATION RUBRICS COMPLETION STATUS
-    # -------------------------------------------------------------------------
-    story.append(Paragraph("8. Evaluation Rubrics - Completion Status (50 Marks)", h1_style))
-    rubric_data = [
-        [Paragraph("<b>Evaluation Rubric</b>", body_style), Paragraph("<b>Max Marks</b>", body_style), Paragraph("<b>Awarded</b>", body_style), Paragraph("<b>Implementation Evidence</b>", body_style)],
-        [Paragraph("ER diagram", body_style), Paragraph("2", body_style), Paragraph("2 / 2", body_style), Paragraph("Chen's notation with strong/weak entities & cardinalities.", body_style)],
-        [Paragraph("Relational schema & constraints", body_style), Paragraph("3", body_style), Paragraph("3 / 3", body_style), Paragraph("Primary/foreign keys, Slide 33 mapping standards.", body_style)],
-        [Paragraph("SQL database DDL with constraints", body_style), Paragraph("4", body_style), Paragraph("4 / 4", body_style), Paragraph("CHECK, UNIQUE, NOT NULL, CASCADE across all 8 tables.", body_style)],
-        [Paragraph("NoSQL/Vector database creation", body_style), Paragraph("4", body_style), Paragraph("4 / 4", body_style), Paragraph("MongoDB $jsonSchema collection + 384D vector space.", body_style)],
-        [Paragraph("Technology justification", body_style), Paragraph("1", body_style), Paragraph("1 / 1", body_style), Paragraph("Academic writeup on SQL ACID vs NoSQL BASE vs Vector AI.", body_style)],
-        [Paragraph("DML operations", body_style), Paragraph("4", body_style), Paragraph("4 / 4", body_style), Paragraph("Populated dummy data across all campus tables.", body_style)],
-        [Paragraph("Nested/correlated/Recursive/Joins", body_style), Paragraph("4", body_style), Paragraph("4 / 4", body_style), Paragraph("Recursive status chain, correlated price check, 5-way join.", body_style)],
-        [Paragraph("Advanced SQL (Proc, Func, Triggers, CTE)", body_style), Paragraph("6", body_style), Paragraph("6 / 6", body_style), Paragraph("3 Triggers, sp_PlaceOrderAtomic, scalar functions, CTEs.", body_style)],
-        [Paragraph("NoSQL/Vector feature & CRUD", body_style), Paragraph("7", body_style), Paragraph("7 / 7", body_style), Paragraph("MongoDB aggregation pipeline, $inc, and 384-D cosine AI search.", body_style)],
-        [Paragraph("Next.js interface", body_style), Paragraph("3", body_style), Paragraph("3 / 3", body_style), Paragraph("Responsive App Router UI with Cart, Search & Live Tracking.", body_style)],
-        [Paragraph("Backend/API & DB integration", body_style), Paragraph("2", body_style), Paragraph("2 / 2", body_style), Paragraph("REST API routes with multi-item ACID transactions & failover.", body_style)],
-        [Paragraph("Authentication & RBAC (2+ roles)", body_style), Paragraph("4", body_style), Paragraph("4 / 4", body_style), Paragraph("Student vs Stall Owner RBAC enforced on frontend & APIs.", body_style)],
-        [Paragraph("Documentation, Git/GitHub", body_style), Paragraph("2", body_style), Paragraph("2 / 2", body_style), Paragraph("Comprehensive 8-section report + organized repository.", body_style)],
-        [Paragraph("Originality / Viva Modification", body_style), Paragraph("4", body_style), Paragraph("4 / 4", body_style), Paragraph("Real campus dining dynamics with atomic wallet debit logic.", body_style)],
-        [Paragraph("<b>TOTAL SCORE</b>", body_style), Paragraph("<b>50</b>", body_style), Paragraph("<b>50 / 50</b>", body_style), Paragraph("<b>All rubric components 100% completed and verified.</b>", body_style)],
-    ]
-    t_rubric = Table(rubric_data, colWidths=[150, 55, 55, 260])
-    t_rubric.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#0f172a')),
-        ('TEXTCOLOR', (0,0), (-1,0), colors.white),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#cbd5e1')),
-        ('BACKGROUND', (0,-1), (-1,-1), colors.HexColor('#f8fafc')),
-        ('TOPPADDING', (0,0), (-1,-1), 2),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 2),
-    ]))
-    story.append(t_rubric)
 
     doc.build(story, canvasmaker=NumberedCanvas)
     print(f"Report PDF successfully generated at: {PDF_OUTPUT}")
