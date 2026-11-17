@@ -2,7 +2,7 @@
 
 **Course**: Database Management Systems (UE24CS351A) · Department of Computer Science & Engineering  
 **Institution**: PES University, Bangalore · Academic Year 2026  
-**Faculty Guides**: Dr. Nagasundari S & Prof. Vinay Joshi  
+**Faculty Guide**: Prof. Vinay Joshi  
 
 ### Team Members & Contributions
 - **Navaneeth Tanuboddi (PES1UG24CS709)**: Relational Database Architecture, DDL/DML, Advanced SQL Triggers, Stored Procedures, and MongoDB NoSQL Implementation.

@@ -1,7 +1,7 @@
 # QuickBite: Multi-Model Technology Justification & Architectural Rationale
 
 **Course**: Database Management Systems (UE24CS351A) · PES University  
-**Faculty Guide**: Dr. Nagasundari S / Prof. Vinay Joshi  
+**Faculty Guide**: Prof. Vinay Joshi  
 **Team Members**: Navaneeth Tanuboddi (PES1UG24CS709) & Rishab Naveen (PES1UG24CS710)  
 **Academic Year**: 2026  
 

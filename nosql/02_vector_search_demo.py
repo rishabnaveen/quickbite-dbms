@@ -1,7 +1,7 @@
 """
 =============================================================================
 QuickBite DBMS Mini Project - 384-Dimensional Vector Database & Semantic Engine
-Curriculum: PES University CSE DBMS (Dr. Nagasundari S / Prof. Vinay Joshi)
+Curriculum: PES University CSE DBMS (Prof. Vinay Joshi)
 Team Members: Navaneeth Tanuboddi (PES1UG24CS709) & Rishab Naveen (PES1UG24CS710)
 Component: 384-Dimensional Dense Vector Embedding Search (pgvector HNSW standard)
 Resolves: Task 8 - Align Vector Dimension with Level 3 PDF Specification

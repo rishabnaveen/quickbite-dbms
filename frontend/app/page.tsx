@@ -1095,7 +1095,7 @@ export default function QuickBiteApp() {
       <footer className="bg-slate-900 text-slate-400 border-t border-slate-800 text-xs py-4 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
           <span>
-            QuickBite DBMS Full-Stack Deliverable · Dr. Nagasundari S & Prof. Vinay Joshi · PES University
+            QuickBite DBMS Full-Stack Deliverable · Prof. Vinay Joshi · PES University
           </span>
           <span className="text-slate-500">
             Next.js App Router · MySQL 8.0 ACID Transactions · MongoDB Document Store · AI Vector Search

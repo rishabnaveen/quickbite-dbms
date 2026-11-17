@@ -1,6 +1,6 @@
 -- =============================================================================
 -- QuickBite DBMS Mini Project - Complete Database Setup Script
--- Curriculum: PES University CSE DBMS (Dr. Nagasundari S)
+-- Curriculum: PES University CSE DBMS (Prof. Vinay Joshi)
 -- Team: Navaneeth Tanuboddi (PES1UG24CS709) & Rishab Naveen (PES1UG24CS710)
 -- Target DBMS: MySQL 8.0 / MySQL Workbench
 -- =============================================================================

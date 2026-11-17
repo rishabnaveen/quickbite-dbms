@@ -150,7 +150,7 @@ def build_pdf():
     story.append(HRFlowable(width="100%", thickness=1.5, color=colors.HexColor('#ea580c'), spaceAfter=10))
 
     story.append(Paragraph("<b>DBMS MINI PROJECT COMPREHENSIVE REPORT</b>", ParagraphStyle('ReportBanner', alignment=1, fontSize=14, fontName='Helvetica-Bold', textColor=colors.HexColor('#0f172a'), spaceAfter=4)))
-    story.append(Paragraph("<b>Project Title:</b> QuickBite — Intelligent Campus Cafeteria Multi-Model DBMS<br/><b>Course:</b> Database Management Systems (UE24CS351A) | <b>Faculty:</b> Dr. Nagasundari S & Prof. Vinay Joshi", subtitle_style))
+    story.append(Paragraph("<b>Project Title:</b> QuickBite — Intelligent Campus Cafeteria Multi-Model DBMS<br/><b>Course:</b> Database Management Systems (UE24CS351A) | <b>Faculty Guide:</b> Prof. Vinay Joshi", subtitle_style))
 
     # Student Table
     stud_data = [

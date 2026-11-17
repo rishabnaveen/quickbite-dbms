@@ -9,7 +9,7 @@
 
 **Course Title**: Database Management Systems  
 **Course Code**: UE24CS351A  
-**Faculty Guides**: Dr. Nagasundari S & Prof. Vinay Joshi  
+**Faculty Guide**: Prof. Vinay Joshi  
 
 ### Submitted By:
 | Student Name | Student Registration Number (SRN) | Roll / Section |
