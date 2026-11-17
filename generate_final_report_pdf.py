@@ -7,7 +7,7 @@ import os
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether, HRFlowable
+    SimpleDocTemplate, Paragraph, Preformatted, Spacer, Table, TableStyle, PageBreak, KeepTogether, HRFlowable
 )
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
@@ -15,7 +15,7 @@ from reportlab.pdfgen import canvas
 PDF_OUTPUT = r"C:\Users\Rishab Naveen\.gemini\antigravity\scratch\quickbite\QuickBite_DBMS_Mini_Project_Report.pdf"
 
 PAGE_WIDTH, PAGE_HEIGHT = A4
-MARGIN = 36 # 0.5 inch margins
+MARGIN = 26 # tight margins to guarantee exact 2-page fit
 USABLE_WIDTH = PAGE_WIDTH - 2 * MARGIN
 
 class NumberedCanvas(canvas.Canvas):
@@ -97,47 +97,47 @@ def build_pdf():
         'Heading1_Custom',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=12,
-        leading=16,
+        fontSize=11,
+        leading=14,
         textColor=colors.HexColor('#ea580c'),
-        spaceBefore=10,
-        spaceAfter=5
+        spaceBefore=7,
+        spaceAfter=3
     )
 
     h2_style = ParagraphStyle(
         'Heading2_Custom',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=9.5,
-        leading=13,
+        fontSize=9,
+        leading=12,
         textColor=colors.HexColor('#1e293b'),
-        spaceBefore=6,
-        spaceAfter=3
+        spaceBefore=4,
+        spaceAfter=2
     )
 
     body_style = ParagraphStyle(
         'Body_Custom',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=8,
-        leading=11.5,
+        fontSize=7.8,
+        leading=10.8,
         textColor=colors.HexColor('#334155'),
-        spaceAfter=5
+        spaceAfter=3
     )
 
     code_style = ParagraphStyle(
         'Code_Custom',
         parent=styles['Normal'],
         fontName='Courier',
-        fontSize=7,
-        leading=9,
+        fontSize=5.2,
+        leading=6.4,
         textColor=colors.HexColor('#0f172a'),
         backColor=colors.HexColor('#f8fafc'),
         borderColor=colors.HexColor('#e2e8f0'),
         borderWidth=0.5,
-        borderPadding=4,
-        spaceBefore=3,
-        spaceAfter=5
+        borderPadding=2,
+        spaceBefore=1,
+        spaceAfter=2
     )
 
     story = []
@@ -166,7 +166,7 @@ def build_pdf():
         ('BOTTOMPADDING', (0,0), (-1,-1), 3),
     ]))
     story.append(t_stud)
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 4))
 
     # -------------------------------------------------------------------------
     # 2. ABSTRACT
@@ -202,7 +202,7 @@ def build_pdf():
         ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
     ]))
     story.append(t_tech)
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 4))
 
     # -------------------------------------------------------------------------
     # 4. SQL DATABASE COMMANDS
@@ -217,7 +217,7 @@ def build_pdf():
     ))
 
     story.append(Paragraph("<b>4.2 Multi-Item Atomic Checkout Transaction (MySQL 8.0)</b>", h2_style))
-    story.append(Paragraph("""-- Multi-item transaction executes atomically across multiple line items:
+    story.append(Preformatted("""-- Multi-item transaction executes atomically across multiple line items:
 START TRANSACTION;
 SELECT Price, Stock_Qty FROM MENU_ITEM WHERE Item_ID = ? AND Stall_ID = ? FOR UPDATE;
 SELECT Wallet_Balance FROM USER_TABLE WHERE User_ID = ? FOR UPDATE;
@@ -276,7 +276,7 @@ COMMIT;""", code_style))
     # 6. NEXT.JS TREE STRUCTURE
     # -------------------------------------------------------------------------
     story.append(Paragraph("6. Next.js Project Tree Structure", h1_style))
-    story.append(Paragraph("""quickbite/
+    story.append(Preformatted("""quickbite/
 +-- sql/
 |   +-- 01_schema_and_seed.sql         # Core DDL tables, constraints & dummy data
 |   +-- 02_advanced_scripts.sql        # Triggers, Procedures, Functions, CTEs, Recursive
@@ -336,8 +336,8 @@ COMMIT;""", code_style))
     t_screen.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#f8fafc')),
         ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#cbd5e1')),
-        ('TOPPADDING', (0,0), (-1,-1), 2.5),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
+        ('TOPPADDING', (0,0), (-1,-1), 1.6),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 1.6),
     ]))
     story.append(t_screen)
 
