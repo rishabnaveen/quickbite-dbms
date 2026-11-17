@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Utensils, Sparkles, ShoppingBag, Clock, ShieldCheck, 
   Store, Wallet, Star, CheckCircle2, AlertCircle, RefreshCw,
-  Search, ArrowRight, UserCheck, Flame, ChevronRight, X
+  Search, ArrowRight, UserCheck, Flame, ChevronRight, X, Plus
 } from 'lucide-react';
 
 interface User {
@@ -90,6 +90,17 @@ export default function QuickBiteApp() {
   const [cravingQuery, setCravingQuery] = useState('');
   const [vectorResults, setVectorResults] = useState<any[] | null>(null);
   const [isSearchingVector, setIsSearchingVector] = useState(false);
+
+  // Review Modal State (MongoDB Insert)
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [newReviewDishId, setNewReviewDishId] = useState('');
+  const [newReviewRating, setNewReviewRating] = useState(5);
+  const [newReviewTitle, setNewReviewTitle] = useState('');
+  const [newReviewComment, setNewReviewComment] = useState('');
+  const [newReviewSpice, setNewReviewSpice] = useState<'Mild' | 'Medium' | 'Spicy'>('Medium');
+  const [newReviewPortion, setNewReviewPortion] = useState<'Adequate' | 'Generous' | 'Small'>('Generous');
+  const [newReviewTags, setNewReviewTags] = useState('Crispy, CampusFavorite');
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
   // Auto-dismiss alert notification
   useEffect(() => {
@@ -310,6 +321,52 @@ export default function QuickBiteApp() {
       console.error('Vector search failed', err);
     } finally {
       setIsSearchingVector(false);
+    }
+  };
+
+  // Submit Review to MongoDB Collection
+  const handleReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!activeUser) return;
+    const targetDishId = newReviewDishId || (menuItems[0] ? menuItems[0].itemId : 'ITEM-001');
+    const dish = menuItems.find(m => m.itemId === targetDishId);
+    if (!dish) return;
+
+    setIsSubmittingReview(true);
+    try {
+      const res = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          dishId: dish.itemId,
+          dishName: dish.name,
+          userId: activeUser.userId,
+          userName: activeUser.name,
+          rating: Number(newReviewRating),
+          reviewTitle: newReviewTitle || `${dish.name} Review`,
+          comment: newReviewComment || 'Delicious meal from the campus cafeteria!',
+          tags: newReviewTags.split(',').map(t => t.trim()).filter(Boolean),
+          metadata: {
+            spice_level: newReviewSpice,
+            portion_size: newReviewPortion,
+            order_channel: 'Web'
+          }
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setNotification({ type: 'success', message: `Review successfully written to MongoDB collection! (ID: ${data.review.review_id})` });
+        setShowReviewModal(false);
+        setNewReviewComment('');
+        setNewReviewTitle('');
+        await fetchAllData();
+      } else {
+        setNotification({ type: 'error', message: data.message || 'Failed to submit review' });
+      }
+    } catch (err: any) {
+      setNotification({ type: 'error', message: err.message || 'Error submitting review' });
+    } finally {
+      setIsSubmittingReview(false);
     }
   };
 
@@ -1056,7 +1113,126 @@ export default function QuickBiteApp() {
                   Polymorphic JSON document collection storing ratings, portion feedback, and spice metrics.
                 </p>
               </div>
+              <button
+                onClick={() => setShowReviewModal(true)}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-sm"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>+ Post New Review (MongoDB)</span>
+              </button>
             </div>
+
+            {/* Review Submission Modal */}
+            {showReviewModal && (
+              <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-5 mb-4 shadow-sm animate-in fade-in">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-bold text-sm text-emerald-950 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    Insert New Document into MongoDB Collection (food_reviews)
+                  </h4>
+                  <button
+                    onClick={() => setShowReviewModal(false)}
+                    className="text-xs text-slate-500 hover:text-slate-800 font-semibold"
+                  >
+                    ✕ Close
+                  </button>
+                </div>
+                <form onSubmit={handleReviewSubmit} className="space-y-3">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-700 block mb-1">Select Dish</label>
+                      <select
+                        value={newReviewDishId || (menuItems[0]?.itemId || '')}
+                        onChange={e => setNewReviewDishId(e.target.value)}
+                        className="w-full text-xs bg-white border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-emerald-500"
+                      >
+                        {menuItems.map(m => (
+                          <option key={m.itemId} value={m.itemId}>{m.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-700 block mb-1">Star Rating (1-5)</label>
+                      <select
+                        value={newReviewRating}
+                        onChange={e => setNewReviewRating(Number(e.target.value))}
+                        className="w-full text-xs bg-white border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-emerald-500"
+                      >
+                        <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+                        <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+                        <option value="3">⭐⭐⭐ 3 Stars</option>
+                        <option value="2">⭐⭐ 2 Stars</option>
+                        <option value="1">⭐ 1 Star</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-700 block mb-1">Spice Level</label>
+                      <select
+                        value={newReviewSpice}
+                        onChange={e => setNewReviewSpice(e.target.value as any)}
+                        className="w-full text-xs bg-white border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-emerald-500"
+                      >
+                        <option value="Mild">Mild</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Spicy">Spicy 🔥</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-700 block mb-1">Review Headline</label>
+                      <input
+                        type="text"
+                        placeholder="e.g., Best kathi roll on campus!"
+                        value={newReviewTitle}
+                        onChange={e => setNewReviewTitle(e.target.value)}
+                        className="w-full text-xs bg-white border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-emerald-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-700 block mb-1">Unstructured Tags (Comma-separated)</label>
+                      <input
+                        type="text"
+                        placeholder="e.g., Crispy, Hot, ValueForMoney"
+                        value={newReviewTags}
+                        onChange={e => setNewReviewTags(e.target.value)}
+                        className="w-full text-xs bg-white border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-emerald-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-semibold text-slate-700 block mb-1">Student Comments</label>
+                    <textarea
+                      rows={2}
+                      placeholder="Write your feedback on taste, freshness, and packaging..."
+                      value={newReviewComment}
+                      onChange={e => setNewReviewComment(e.target.value)}
+                      className="w-full text-xs bg-white border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-emerald-500"
+                      required
+                    />
+                  </div>
+
+                  <div className="flex justify-end gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setShowReviewModal(false)}
+                      className="px-3 py-1.5 text-xs text-slate-600 hover:text-slate-800 font-semibold"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isSubmittingReview}
+                      className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-xs font-bold px-4 py-1.5 rounded-lg transition-all"
+                    >
+                      {isSubmittingReview ? 'Inserting into MongoDB...' : 'Insert Review to MongoDB'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {reviews.map(rev => (
