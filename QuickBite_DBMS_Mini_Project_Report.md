@@ -43,7 +43,59 @@ A full-stack **Next.js** application integrates these persistent stores with str
 
 ---
 
-## 4. SQL - Database Commands
+## 4. Conceptual ER Modeling & Entity-Relationship Specifications
+
+### 4.1 Conceptual ER Modeling Construct Classifications
+| Entity Set | Entity Type | Key Attribute | Discriminator (Partial Key) | Identifying Relationship |
+| :--- | :--- | :--- | :--- | :--- |
+| **USER** | Strong Entity | `User_ID` | — | — |
+| **STALL** | Strong Entity | `Stall_ID` | — | — |
+| **MENU_ITEM** | Strong Entity | `Item_ID` | — | — |
+| **ORDER** | Strong Entity | `Order_ID` | — | — |
+| **WALLET_TRANSACTION** | Strong Entity | `Transaction_ID` | — | — |
+| **ORDER_ITEM** | Weak Entity | `{Order_ID, Item_ID}` | `Item_ID` | CONTAINS (with ORDER) |
+| **ORDER_STATUS_LOG** | Weak Entity | `{Order_ID, Changed_At}` | `Changed_At` | AUDITS (with ORDER) |
+
+### 4.2 Comprehensive Attribute Characterization
+| Attribute Name | Entity / Relationship | Classification | Domain & Implementation Representation |
+| :--- | :--- | :--- | :--- |
+| `User_ID`, `Stall_ID`, `Item_ID` | USER, STALL, MENU_ITEM | Key Attribute | Uniquely identifies each record; primary key constraint. |
+| `Full_Name` | USER | Composite Attribute | Decomposes into atomic scalars: `First_Name` and `Last_Name`. |
+| `Email`, `Phone_Number` | USER | Simple / Single-valued | Scalar strings; unique constraint with email validation. |
+| `Wallet_Balance` | USER | Stored Attribute | Numeric decimal scalar with `CHECK (Wallet_Balance >= 0.00)`. |
+| `Dietary_Tags` | MENU_ITEM | Multivalued Attribute | Takes multiple tags per dish (`{'vegan','keto','high-protein'}`). Normalized into `ITEM_DIETARY_TAGS`. |
+| `Vector` | MENU_ITEM | Complex / Vector Attribute | 384-dimensional dense semantic embedding for pgvector HNSW search. |
+| `Is_Available` | MENU_ITEM | Derived Attribute | Derived logically from `Stock_Qty > 0`. |
+| `Subtotal` | ORDER_ITEM | Derived Attribute | Calculated as `(Quantity * Unit_Price)`. |
+| `Total_Amount` | ORDER | Stored / Derived Attribute | Aggregated sum of order item subtotals for transactional integrity. |
+
+### 4.3 Relationships, Cardinality & Participation Constraints
+| Relationship Set | Participating Entities | Cardinality | Structural Constraint (Min, Max) | Participation Constraint |
+| :--- | :--- | :---: | :--- | :--- |
+| **MANAGES** | USER (Owner) : STALL | 1 : N | USER (0, N); STALL (1, 1) | STALL: Total; USER: Partial |
+| **OFFERS** | STALL : MENU_ITEM | 1 : N | STALL (0, N); MENU_ITEM (1, 1) | MENU_ITEM: Total; STALL: Partial |
+| **PLACES** | USER (Student) : ORDER | 1 : N | USER (0, N); ORDER (1, 1) | ORDER: Total; USER: Partial |
+| **CONTAINS** | ORDER : ORDER_ITEM | 1 : N | ORDER (1, N); ORDER_ITEM (1, 1) | Both Total (Identifying Relationship) |
+| **REFERENCES** | MENU_ITEM : ORDER_ITEM | 1 : N | MENU_ITEM (0, N); ORDER_ITEM (1, 1) | ORDER_ITEM: Total; MENU_ITEM: Partial |
+| **AUDITS** | ORDER : ORDER_STATUS_LOG | 1 : N | ORDER (1, N); LOG (1, 1) | Both Total (Immutable Audit Trail) |
+| **OWNS_TXN** | USER : WALLET_TRANSACTION | 1 : N | USER (0, N); WALLET_TXN (1, 1) | WALLET_TXN: Total; USER: Partial |
+
+---
+
+## 5. Relational Schema Design & Step-by-Step ER-to-Relational Mapping
+
+### 5.1 Formal 7-Step Algorithm (Elmasri & Navathe Standards)
+- **Step 1 (Regular Entities):** Create relations `USER` (PK `User_ID`), `STALL` (PK `Stall_ID`), `MENU_ITEM` (PK `Item_ID`), `ORDER` (PK `Order_ID`), and `WALLET_TRANSACTION` (PK `Txn_ID`). Flatten composite attribute `Full_Name` into `First_Name` and `Last_Name`.
+- **Step 2 (Weak Entities):** Create `ORDER_ITEM` with composite PK `{Order_ID, Item_ID}`, FK `Order_ID` → `ORDER`. Create `ORDER_STATUS_LOG` with composite PK `{Order_ID, Changed_At}`, FK `Order_ID` → `ORDER`.
+- **Step 3 (Binary 1:1):** None present in core schema.
+- **Step 4 (Binary 1:N):** Embed foreign keys into N-side relations: `STALL(Owner_ID → USER)`, `MENU_ITEM(Stall_ID → STALL)`, `ORDER(Student_ID → USER, Stall_ID → STALL)`, `ORDER_ITEM(Item_ID → MENU_ITEM)`, and `WALLET_TRANSACTION(User_ID → USER, Order_ID → ORDER)`.
+- **Step 5 (Binary M:N):** Resolved via Associative Weak Entity: The M:N relationship between `ORDER` and `MENU_ITEM` is resolved through weak entity `ORDER_ITEM` with composite PK `{Order_ID, Item_ID}` and descriptive attributes `Quantity` and `Unit_Price`.
+- **Step 6 (Multivalued Attributes):** Normalized into `ITEM_DIETARY_TAGS` with composite PK `{Item_ID, Dietary_Tag}` and FK `Item_ID → MENU_ITEM`.
+- **Step 7 (N-ary Types):** QuickBite multi-party transactions decompose into binary structures without ternary anomalies.
+
+---
+
+## 6. SQL - Database Commands
 
 ### 4.1 Data Definition Language (DDL) with Integrity Constraints
 ```sql
@@ -285,9 +337,9 @@ ORDER BY Price_Delta DESC;
 
 ---
 
-## 5. NoSQL / Vector Database Commands
+## 7. NoSQL / Vector Database Commands
 
-### 5.1 MongoDB Collection Schema Validation
+### 7.1 MongoDB Collection Schema Validation
 ```javascript
 use quickbite_nosql;
 
@@ -316,7 +368,7 @@ db.food_reviews.createIndex({ dish_id: 1, rating: -1 });
 db.food_reviews.createIndex({ comment: "text", review_title: "text" });
 ```
 
-### 5.2 MongoDB CRUD & Aggregation Pipeline
+### 7.2 MongoDB CRUD & Aggregation Pipeline
 ```javascript
 // CREATE
 db.food_reviews.insertOne({
@@ -352,7 +404,7 @@ db.food_reviews.updateOne({ review_id: "REV-1001" }, { $inc: { helpful_votes: 1 
 db.food_reviews.deleteOne({ review_id: "REV-1005" });
 ```
 
-### 5.3 AI Vector Database Cosine Similarity Recommendation
+### 7.3 AI Vector Database Cosine Similarity Recommendation
 ```python
 # Cosine Similarity formulation: dot_product(A, B) / (norm(A) * norm(B))
 # Semantic query: 'spicy high-protein wrap for lunch'
@@ -364,7 +416,7 @@ db.food_reviews.deleteOne({ review_id: "REV-1005" });
 
 ---
 
-## 6. Next.js - Project Tree Structure
+## 8. Next.js - Project Tree Structure
 
 ```text
 quickbite/
@@ -399,9 +451,9 @@ quickbite/
 
 ---
 
-## 7. Sample Screenshots of Application Code and Demo
+## 9. Sample Screenshots of Application Code and Demo
 
-### 7.1 Key Features Implemented in Next.js UI:
+### 9.1 Key Features Implemented in Next.js UI:
 1. **RBAC Session Switcher**:
    - Allows switching between **Student** (`U101 - Navaneeth`, `U102 - Rishab`) and **Stall Owner** (`U201 - Ramesh Kumar`, `U202 - Suresh Bhat`).
    - The UI automatically adapts: Students access Menu, AI Craving Search, and Order Tracking; Stall Owners access live kitchen order tickets and status transitions for their stall.
