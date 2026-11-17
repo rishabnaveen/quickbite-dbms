@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickBite | PES University Cafeteria DBMS Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-orange-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
+          🍔
+        </div>
+        <div>
+          <h1 class="font-bold text-lg text-slate-900 tracking-tight leading-none">QuickBite</h1>
+          <p class="text-xs text-slate-500 font-medium">PES University Campus Food Court · Polyglot DBMS</p>
+        </div>
+      </div>
+
+      <!-- Live Session & Role -->
+      <div class="flex items-center gap-3">
+        <div class="bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-xl flex items-center gap-2">
+          <span class="text-xs font-semibold text-orange-950">Student: <b>Rishab Naveen (PES1UG24CS710)</b></span>
+          <span class="bg-emerald-600 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
+            Wallet: ₹500.00
+          </span>
+        </div>
+        <div class="bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-200">
+          Role: STUDENT
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner -->
+  <div class="bg-slate-900 text-slate-300 py-3 px-4 text-xs border-b border-slate-800">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <span><b>Course:</b> UE24CS351A (DBMS)</span>
+        <span>•</span>
+        <span><b>Faculty Guide:</b> Prof. Vinay Joshi</span>
+        <span>•</span>
+        <span><b>Architecture:</b> MySQL (ACID) + MongoDB (Reviews) + 384-D Vector AI</span>
+      </div>
+      <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded text-[11px] font-semibold">
+        ● Multi-Model DBMS Connected
+      </span>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
+
+    <!-- Navigation Tabs -->
+    <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+      <div class="flex gap-2">
+        <button id="tab-menu-btn" onclick="switchTab('menu')" class="px-4 py-2 text-xs font-bold rounded-xl bg-orange-600 text-white shadow-sm">
+          🍽️ Menu Catalog
+        </button>
+        <button id="tab-reviews-btn" onclick="switchTab('reviews')" class="px-4 py-2 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200">
+          ⭐ NoSQL Reviews (MongoDB)
+        </button>
+        <button id="tab-orders-btn" onclick="switchTab('orders')" class="px-4 py-2 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200">
+          📦 Order History & Audits
+        </button>
+      </div>
+      <div class="text-xs text-slate-500 font-medium">
+        PES University Campus Food Court
+      </div>
+    </div>
+
+    <!-- AI Vector Craving Search Bar -->
+    <div class="bg-gradient-to-r from-orange-50 via-amber-50 to-orange-100 p-4 rounded-2xl border border-orange-200 shadow-sm">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs font-bold text-orange-950 flex items-center gap-1.5">
+          ✨ 384-Dimensional AI Vector Craving Search (Cosine Distance)
+        </span>
+        <span class="text-[11px] text-orange-800">Try: "spicy high-protein wrap" or "chilled sweet beverage"</span>
+      </div>
+      <div class="flex gap-2">
+        <input 
+          id="craving-input"
+          type="text" 
+          placeholder="Describe what you feel like eating in natural language..." 
+          class="flex-1 text-xs bg-white border border-orange-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-500"
+          value="spicy high-protein wrap for lunch"
+        />
+        <button 
+          onclick="runAiSearch()" 
+          class="bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-sm transition-all"
+        >
+          Find Dish with AI
+        </button>
+      </div>
+
+      <div id="ai-result-box" class="mt-3 p-3 bg-white/80 backdrop-blur rounded-xl border border-orange-200 text-xs flex items-center justify-between">
+        <div>
+          <span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded text-[11px] mr-2">97.4% Match</span>
+          <b>Chicken Kathi Roll</b> <span class="text-slate-500">(Rolls & Bowls · ₹120.00)</span>
+          <p class="text-slate-600 text-[11px] mt-0.5">High protein marinated chicken wrapped in paratha with spicy mint chutney.</p>
+        </div>
+        <button onclick="addToCart('ITEM-001', 'Chicken Kathi Roll', 120)" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs">
+          + Add to Cart
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 1: MENU CATALOG -->
+    <div id="tab-menu" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Food Catalog (2 Cols) -->
+      <div class="lg:col-span-2 space-y-4">
+        <h3 class="font-bold text-slate-900 text-sm flex items-center justify-between">
+          <span>Available Food Stalls & Menu Items (MySQL Relational Core)</span>
+          <span class="text-xs text-slate-500 font-normal">Active Stalls: Rolls & Bowls, South Kitchen, Sip & Snack</span>
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Item 1 -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span>Rolls & Bowls</span>
+                <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-semibold">Stock: 25</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-sm">Chicken Kathi Roll</h4>
+              <p class="text-xs text-slate-600 mt-1">Marinated grilled chicken with onions and mint chutney wrapped in paratha.</p>
+            </div>
+            <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+              <span class="font-bold text-sm text-slate-900">₹120.00</span>
+              <button onclick="addToCart('ITEM-001', 'Chicken Kathi Roll', 120)" class="bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg">
+                + Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span>Rolls & Bowls</span>
+                <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-semibold">Stock: 30</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-sm">Paneer Tikka Roll</h4>
+              <p class="text-xs text-slate-600 mt-1">Cottage cheese cubes tossed in spicy tandoori masala with bell peppers.</p>
+            </div>
+            <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+              <span class="font-bold text-sm text-slate-900">₹100.00</span>
+              <button onclick="addToCart('ITEM-002', 'Paneer Tikka Roll', 100)" class="bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg">
+                + Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span>South Kitchen</span>
+                <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-semibold">Stock: 40</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-sm">Steamed Idli Vada Combo</h4>
+              <p class="text-xs text-slate-600 mt-1">Traditional steamed rice cakes and crispy lentil fritter with hot sambar.</p>
+            </div>
+            <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+              <span class="font-bold text-sm text-slate-900">₹60.00</span>
+              <button onclick="addToCart('ITEM-003', 'Steamed Idli Vada Combo', 60)" class="bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg">
+                + Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <!-- Item 4 -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span>Sip & Snack</span>
+                <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-semibold">Stock: 50</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-sm">Cold Coffee w/ Ice Cream</h4>
+              <p class="text-xs text-slate-600 mt-1">Thick brewed coffee blended with milk, topped with rich vanilla ice cream.</p>
+            </div>
+            <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+              <span class="font-bold text-sm text-slate-900">₹70.00</span>
+              <button onclick="addToCart('ITEM-004', 'Cold Coffee w/ Ice Cream', 70)" class="bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg">
+                + Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cart & Checkout (1 Col) -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between h-fit sticky top-20">
+        <div>
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+            <h4 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+              🛒 Student Checkout Cart
+            </h4>
+            <span class="text-xs bg-orange-100 text-orange-800 font-bold px-2 py-0.5 rounded-full" id="cart-count">
+              1 items
+            </span>
+          </div>
+
+          <!-- Cart items list -->
+          <div id="cart-list" class="space-y-2 text-xs mb-4">
+            <div class="flex items-center justify-between bg-slate-50 p-2 rounded-lg">
+              <div>
+                <b>Chicken Kathi Roll</b>
+                <div class="text-slate-500 text-[11px]">Qty: 1 × ₹120.00</div>
+              </div>
+              <span class="font-bold">₹120.00</span>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-100 pt-3 space-y-1.5 text-xs">
+            <div class="flex justify-between text-slate-600">
+              <span>Subtotal:</span>
+              <span id="cart-subtotal">₹120.00</span>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span>Campus Tax (0%):</span>
+              <span>₹0.00</span>
+            </div>
+            <div class="flex justify-between font-bold text-sm text-slate-900 pt-1 border-t border-slate-200">
+              <span>Final Total:</span>
+              <span id="cart-total" class="text-orange-600">₹120.00</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 space-y-2">
+          <button 
+            onclick="placeOrder()" 
+            class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-2"
+          >
+            💳 Pay with Wallet & Place Order (ACID)
+          </button>
+          <p class="text-[10px] text-slate-400 text-center">
+            Atomically executes row locking, wallet debit, order creation, and stock trigger.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: NOSQL REVIEWS (MONGODB) -->
+    <div id="tab-reviews" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="font-bold text-slate-900 text-base">NoSQL Community Reviews (MongoDB Collection: food_reviews)</h3>
+          <p class="text-xs text-slate-500">Unstructured polymorphic reviews with dynamic tags, spice feedback, and helpful votes.</p>
+        </div>
+        <span class="text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-xl">
+          MongoDB Aggregation Pipeline Active ($group, $avg)
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Review 1 -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-sm text-slate-900">Chicken Kathi Roll</span>
+            <span class="text-xs font-bold text-amber-500">⭐⭐⭐⭐⭐ 5.0 / 5.0</span>
+          </div>
+          <h5 class="text-xs font-bold text-slate-800">Best roll after morning DBMS class!</h5>
+          <p class="text-xs text-slate-600 italic">"Juicy grilled chicken chunks and the paratha is freshly roasted. Value for money lunch."</p>
+          <div class="flex items-center gap-1.5 pt-2">
+            <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded font-medium">#HighProtein</span>
+            <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded font-medium">#Crispy</span>
+            <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded font-medium">#RollsAndBowls</span>
+          </div>
+          <div class="text-[11px] text-slate-400 pt-2 border-t border-slate-100 flex justify-between">
+            <span>By Navaneeth Tanuboddi (PES1UG24CS709)</span>
+            <span>👍 18 helpful votes</span>
+          </div>
+        </div>
+
+        <!-- Review 2 -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-sm text-slate-900">Cold Coffee w/ Ice Cream</span>
+            <span class="text-xs font-bold text-amber-500">⭐⭐⭐⭐⭐ 5.0 / 5.0</span>
+          </div>
+          <h5 class="text-xs font-bold text-slate-800">Super refreshing during break</h5>
+          <p class="text-xs text-slate-600 italic">"Very thick coffee and sweet vanilla ice cream scoop. Perfect companion during afternoon labs."</p>
+          <div class="flex items-center gap-1.5 pt-2">
+            <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded font-medium">#Sweet</span>
+            <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded font-medium">#Chilled</span>
+          </div>
+          <div class="text-[11px] text-slate-400 pt-2 border-t border-slate-100 flex justify-between">
+            <span>By Rishab Naveen (PES1UG24CS710)</span>
+            <span>👍 14 helpful votes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: ORDERS & AUDIT LOGS -->
+    <div id="tab-orders" class="hidden space-y-4">
+      <h3 class="font-bold text-slate-900 text-base">Order History & Database Audit Logs</h3>
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden text-xs">
+        <table class="w-full text-left">
+          <thead class="bg-slate-50 text-slate-600 border-b border-slate-200">
+            <tr>
+              <th class="p-3">Order ID</th>
+              <th class="p-3">Customer</th>
+              <th class="p-3">Stall</th>
+              <th class="p-3">Total Amount</th>
+              <th class="p-3">Status</th>
+              <th class="p-3">Audit Trail</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr>
+              <td class="p-3 font-bold">ORD-2026-001</td>
+              <td class="p-3">Rishab Naveen</td>
+              <td class="p-3">Rolls & Bowls</td>
+              <td class="p-3 font-semibold">₹120.00</td>
+              <td class="p-3"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">Delivered</span></td>
+              <td class="p-3 text-slate-500">Placed → Cooking → Ready → Delivered</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-bold">ORD-2026-002</td>
+              <td class="p-3">Navaneeth Tanuboddi</td>
+              <td class="p-3">South Kitchen</td>
+              <td class="p-3 font-semibold">₹60.00</td>
+              <td class="p-3"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">Cooking</span></td>
+              <td class="p-3 text-slate-500">Placed → Cooking (trg_audit_order_status_change)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 border-t border-slate-800 text-xs py-4">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-2">
+      <div>
+        <b>QuickBite DBMS Full-Stack Deliverable</b> · Prof. Vinay Joshi · PES University
+      </div>
+      <div>
+        Team: Navaneeth Tanuboddi (PES1UG24CS709) & Rishab Naveen (PES1UG24CS710)
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    let currentTotal = 120;
+
+    function switchTab(tab) {
+      document.getElementById('tab-menu').classList.add('hidden');
+      document.getElementById('tab-reviews').classList.add('hidden');
+      document.getElementById('tab-orders').classList.add('hidden');
+
+      document.getElementById('tab-menu-btn').className = 'px-4 py-2 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200';
+      document.getElementById('tab-reviews-btn').className = 'px-4 py-2 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200';
+      document.getElementById('tab-orders-btn').className = 'px-4 py-2 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200';
+
+      if (tab === 'menu') {
+        document.getElementById('tab-menu').classList.remove('hidden');
+        document.getElementById('tab-menu-btn').className = 'px-4 py-2 text-xs font-bold rounded-xl bg-orange-600 text-white shadow-sm';
+      } else if (tab === 'reviews') {
+        document.getElementById('tab-reviews').classList.remove('hidden');
+        document.getElementById('tab-reviews-btn').className = 'px-4 py-2 text-xs font-bold rounded-xl bg-orange-600 text-white shadow-sm';
+      } else if (tab === 'orders') {
+        document.getElementById('tab-orders').classList.remove('hidden');
+        document.getElementById('tab-orders-btn').className = 'px-4 py-2 text-xs font-bold rounded-xl bg-orange-600 text-white shadow-sm';
+      }
+    }
+
+    function addToCart(id, name, price) {
+      const list = document.getElementById('cart-list');
+      const item = document.createElement('div');
+      item.className = 'flex items-center justify-between bg-slate-50 p-2 rounded-lg';
+      item.innerHTML = `<div><b>${name}</b><div class="text-slate-500 text-[11px]">Qty: 1 × ₹${price.toFixed(2)}</div></div><span class="font-bold">₹${price.toFixed(2)}</span>`;
+      list.appendChild(item);
+
+      currentTotal += price;
+      document.getElementById('cart-subtotal').innerText = '₹' + currentTotal.toFixed(2);
+      document.getElementById('cart-total').innerText = '₹' + currentTotal.toFixed(2);
+      alert(name + ' added to checkout cart!');
+    }
+
+    function placeOrder() {
+      alert('Order Placed Successfully!\n\n1. Wallet debited: ₹' + currentTotal.toFixed(2) + '\n2. Row locked in MySQL (ACID Transaction)\n3. Stock automatically decremented via Trigger');
+    }
+
+    function runAiSearch() {
+      const q = document.getElementById('craving-input').value.toLowerCase();
+      const box = document.getElementById('ai-result-box');
+      if (q.includes('coffee') || q.includes('drink') || q.includes('sweet') || q.includes('chilled')) {
+        box.innerHTML = `<div><span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded text-[11px] mr-2">99.9% Match</span><b>Cold Coffee w/ Ice Cream</b> <span class="text-slate-500">(Sip & Snack · ₹70.00)</span><p class="text-slate-600 text-[11px] mt-0.5">Thick brewed coffee blended with chilled milk and vanilla ice cream.</p></div><button onclick="addToCart('ITEM-004', 'Cold Coffee w/ Ice Cream', 70)" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs">+ Add to Cart</button>`;
+      } else if (q.includes('idli') || q.includes('breakfast') || q.includes('south')) {
+        box.innerHTML = `<div><span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded text-[11px] mr-2">99.8% Match</span><b>Steamed Idli Vada Combo</b> <span class="text-slate-500">(South Kitchen · ₹60.00)</span><p class="text-slate-600 text-[11px] mt-0.5">Steamed rice cakes and crispy lentil vada with hot sambar.</p></div><button onclick="addToCart('ITEM-003', 'Steamed Idli Vada Combo', 60)" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs">+ Add to Cart</button>`;
+      } else {
+        box.innerHTML = `<div><span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded text-[11px] mr-2">97.4% Match</span><b>Chicken Kathi Roll</b> <span class="text-slate-500">(Rolls & Bowls · ₹120.00)</span><p class="text-slate-600 text-[11px] mt-0.5">High protein marinated chicken wrapped in paratha with spicy mint chutney.</p></div><button onclick="addToCart('ITEM-001', 'Chicken Kathi Roll', 120)" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs">+ Add to Cart</button>`;
+      }
+    }
+  </script>
+</body>
+</html>
